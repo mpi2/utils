@@ -1,0 +1,292 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.mousephenotype.dcc.utils</groupId>
+    <artifactId>utils</artifactId>
+    <packaging>pom</packaging>
+    <name>utils</name>
+    <version>1.0.0-SNAPSHOT</version>    
+    <description>
+        
+    </description>
+    
+    
+
+
+    <inceptionYear>2012</inceptionYear>
+    
+    <developers>
+        <developer>
+            <id>julian</id>
+            <name>Julian Atienza</name>
+            <email>j dot atienza at har dot mrc dot ac dot uk</email>
+            <organization>org.mousephenotype</organization>
+            <roles>
+                <role>Senior Java Developer</role>
+            </roles>
+            <timezone>GMT0</timezone>
+        </developer>
+    </developers>
+    
+    <!--<contributors> -->
+    
+        
+    
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+    
+    <scm>
+        <connection>scm:git:git@github.com:mpi2/utils.git</connection>
+        <url>scm:git:git@github.com:mpi2/utils.git</url>
+        <developerConnection>scm:git:git@github.com:mpi2/utils.git</developerConnection>
+    </scm>
+    
+    
+     <modules>
+         <module>utils.io</module>
+         <module>utils.xml</module>
+         <module>utils.persistence</module>
+     </modules>
+    
+    
+
+
+    
+    <organization>
+        <name> www.mousephenotype.org</name>
+        <url>www.mousephenotype.org</url>
+    </organization>
+    
+    <build>
+	 <defaultGoal>install</defaultGoal>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+            
+            <resource> <!--do not distribute documentation -->
+                <directory>docs</directory>
+                <excludes>
+                    <exclude>**</exclude> 
+                </excludes>
+            </resource>
+        </resources>
+        
+        <plugins>
+            
+            <plugin> <!-- for each build, remove the logs for test and execution -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>2.5</version>
+                <executions>
+                    <execution>
+                        <id>auto-clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>test_logs</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>exec_logs</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>test_data</directory>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+
+	  <plugin>
+                <!--
+                mvn license:check
+                mvn license:format
+                -->
+                <inherited>false</inherited>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <version>1.10.b1</version>
+                <configuration>
+                    <header>conf/header.txt</header>
+                    <strictCheck>true</strictCheck>
+                    <failIfMissing>true</failIfMissing>
+                    <aggregate>true</aggregate>
+                    <properties>
+                        <year>2013</year>
+                        <developer>Julian Atienza Herrero</developer>
+                        <email>j.atienza at har.mrc.ac.uk</email>
+                    </properties>
+                    <excludes>
+                        <exclude>**/src/main/generated/**</exclude>
+                        <exclude>**/src/test/generated/**</exclude>
+                        <exclude>**/data/**</exclude>
+                        <exclude>**/conf/**</exclude>
+                        <exclude>**/docs/**</exclude>
+                        <exclude>**/*.properties</exclude>
+                        <exclude>**/*.script</exclude>
+                        <exclude>**/*.xjb</exclude>
+                        <exclude>**/*.log</exclude>
+                        <exclude>**/*.txt</exclude>
+                        <exclude>**/resolver.xsd</exclude>
+                        <exclude>**/*.dat</exclude>
+                        <exclude>**/*.ftp</exclude>
+                        <exclude>**/*.ws</exclude>
+                        <exclude>**/*.rpt</exclude>
+                        <exclude>**/*.Logger</exclude>
+                        <exclude>**/*.lck</exclude>
+                        <exclude>**/*.tgz</exclude>
+                        <exclude>**/*.ctrl</exclude>
+                        <exclude>**/*.lsql</exclude>
+                        <exclude>**/*.wsdl</exclude>
+                        <exclude>**/*.tmp</exclude>
+                        <exclude>**/*.json</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>check-headers</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin> 
+
+
+        </plugins>
+
+    </build>
+    
+      
+       <repositories>
+
+        <repository>
+            <id>maven2</id>
+            <url>http://repo1.maven.org/maven2</url>
+        </repository>
+        
+        <repository>
+            <id>Codehaus repository</id>
+            <url>http://repository.codehaus.org/</url>
+        </repository>
+        
+        <repository>
+            <id>jboss-public-repository-group</id>
+            <name>JBoss Public Maven Repository Group</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+        </repository>
+
+        <repository>
+            <id>sonatype-public-repository</id>
+            <url>https://oss.sonatype.org/content/groups/public</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+
+    </repositories>
+    
+    <pluginRepositories>
+        <pluginRepository>
+            <id>maven2</id>
+            <url>http://repo1.maven.org/maven2</url>
+        </pluginRepository>
+        
+        <pluginRepository>
+            <id>Codehaus repository</id>
+            <url>http://repository.codehaus.org/</url>
+        </pluginRepository>
+        
+        <pluginRepository>
+            <id>jboss-public-repository-group</id>
+            <name>JBoss Public Maven Repository Group</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+        </pluginRepository>
+        
+        <pluginRepository>
+            <id>sonatype-public-repository</id>
+            <url>https://oss.sonatype.org/content/groups/public</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </pluginRepository>
+        
+    </pluginRepositories>
+    
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit-addons</groupId>
+            <artifactId>junit-addons</artifactId>
+            <version>1.4</version>
+            <scope>test</scope>
+        </dependency>
+
+    <!-- Logging dependencies -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${org.slf4j.version}</version>
+        </dependency>
+
+	<dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>${org.slf4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${org.slf4j.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${ch.qos.logback.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${ch.qos.logback.version}</version>
+        </dependency>
+           
+      
+    </dependencies>
+       
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	<org.slf4j.version>1.7.2</org.slf4j.version>
+	<ch.qos.logback.version>1.0.9</ch.qos.logback.version>
+    </properties>
+    
+</project>

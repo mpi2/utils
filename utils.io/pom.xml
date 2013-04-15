@@ -1,0 +1,211 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.mousephenotype.dcc.utils.io</groupId>
+    <artifactId>utils.io</artifactId>
+    <packaging>jar</packaging>
+    <name>utils.io</name>
+    <version>1.0.0-SNAPSHOT</version>    
+    <description>
+        
+    </description>
+    
+    
+    
+    
+    <parent>
+        <groupId>org.mousephenotype.dcc.utils</groupId>
+        <artifactId>utils</artifactId>
+        <version>1.0.0-SNAPSHOT</version>    
+    </parent>
+    
+   
+
+
+    <inceptionYear>2012</inceptionYear>
+    
+    <developers>
+        <developer>
+            <id>julian</id>
+            <name>Julian Atienza</name>
+            <email>j dot atienza at har dot mrc dot ac dot uk</email>
+            <organization>org.mousephenotype</organization>
+            <roles>
+                <role>Senior Java Developer</role>
+            </roles>
+            <timezone>GMT0</timezone>
+        </developer>
+    </developers>
+    
+    <!--<contributors> -->
+    
+        
+    
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+    
+     
+    
+    
+
+
+
+    
+    <organization>
+        <name> www.mousephenotype.org</name>
+        <url>www.mousephenotype.org</url>
+    </organization>
+    
+    <build>
+        <defaultGoal>install</defaultGoal>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+            
+            <resource> <!--do not distribute documentation -->
+                <directory>docs</directory>
+                <excludes>
+                    <exclude>**</exclude> 
+                </excludes>
+            </resource>
+        </resources>
+        
+        <plugins>
+            
+            <plugin> <!-- for each build, remove the logs for test and execution -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>2.5</version>
+                <executions>
+                    <execution>
+                        <id>auto-clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>test_logs</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>exec_logs</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>test_data</directory>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+
+       
+
+ 
+
+
+           
+            <plugin> <!--to configure the jdk version to compile -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.0</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+
+                     
+
+            <plugin> <!--to configure test environment: junit4, run tests and install with test failure (generate jars)  -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.14</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit4</artifactId>
+                        <version>2.14</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <testFailureIgnore>false</testFailureIgnore> 
+                    <skipTests>false</skipTests>
+                    <excludes> <!-- http://ant.apache.org/manual/dirtasks.html -->
+                        <exclude>**/IT*.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+           
+            <plugin><!--generate executable jar with dependencies , zip with dependencies, source jar and source zip.  -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/assemble/bin.xml</descriptor>
+                    </descriptors>
+                    <descriptorRefs>
+                        <descriptorRef>src</descriptorRef>
+                    </descriptorRefs>
+                    <formats>
+                        <format>jar</format>
+                        <format>zip</format>
+                    </formats>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                        <phase>package</phase> <!-- bind to the packaging phase -->
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
+        
+            
+        </plugins>
+
+    </build>
+    
+      
+   
+    
+    
+    
+    <dependencies>
+      
+        <dependency>
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
+            <version>1.9</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.1</version>
+        </dependency>
+            
+      
+    </dependencies>
+       
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        
+    </properties>
+    
+</project>

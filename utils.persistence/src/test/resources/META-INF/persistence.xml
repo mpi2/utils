@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+
+    Copyright (C) 2013 Julian Atienza Herrero <j.atienza at har.mrc.ac.uk>
+
+    MEDICAL RESEARCH COUNCIL UK MRC
+
+    Harwell Mammalian Genetics Unit
+
+    http://www.har.mrc.ac.uk
+
+    Licensed under the Apache License, Version 2.0 (the "License"); you may not
+    use this file except in compliance with the License. You may obtain a copy of
+    the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+    License for the specific language governing permissions and limitations under
+    the License.
+
+-->
+<persistence version="2.0" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd
+http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:orm="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <persistence-unit name="org.mousephenotype.dcc.exportlibrary.datastructure">
+        <jar-file>target/</jar-file>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.common.StatusCode</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.procedure.CentreProcedure</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.procedure.CentreProcedureSet</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.procedure.Dimension</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.procedure.Experiment</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.procedure.Housing</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.procedure.Line</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.procedure.MediaFile</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.procedure.MediaParameter</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.procedure.MediaSample</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.procedure.MediaSampleParameter</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.procedure.MediaSection</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.procedure.OntologyParameter</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.procedure.ParameterAssociation</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.procedure.Procedure</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.procedure.ProcedureMetadata</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.procedure.SeriesMediaParameter</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.procedure.SeriesMediaParameterValue</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.procedure.SeriesParameter</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.procedure.SeriesParameterValue</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.procedure.SimpleParameter</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.specimen.CentreSpecimen</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.specimen.CentreSpecimenSet</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.specimen.ChromosomalAlteration</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.specimen.Chromosome</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.specimen.Embryo</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.specimen.Genotype</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.specimen.Mouse</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.specimen.ParentalStrain</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.specimen.RelatedSpecimen</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.core.specimen.Specimen</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.tracker.submission.Submission</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.tracker.submission.SubmissionSet</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.tracker.validation.Validation</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.tracker.validation.ValidationSet</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.tracker.validation_report.ValidationReport</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.tracker.validation_report.ValidationReportSet</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <shared-cache-mode>NONE</shared-cache-mode>
+    </persistence-unit>
+</persistence>
