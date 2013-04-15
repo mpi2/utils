@@ -174,6 +174,12 @@
       
        <repositories>
 
+	<repository>
+     	    <id>cloudbees</id>
+            <url>http://repository-julianah.forge.cloudbees.com/release/</url>
+        </repository>
+
+
         <repository>
             <id>maven2</id>
             <url>http://repo1.maven.org/maven2</url>
