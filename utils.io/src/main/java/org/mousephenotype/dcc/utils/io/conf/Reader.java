@@ -1,5 +1,7 @@
 package org.mousephenotype.dcc.utils.io.conf;
 
+import java.io.File;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -13,6 +15,13 @@ public class Reader {
 
     public Reader(String filename) throws ConfigurationException {
         propertiesConfiguration = new PropertiesConfiguration(filename);
+    }
+    public Reader(File file) throws ConfigurationException{
+        propertiesConfiguration = new PropertiesConfiguration(file);
+    }
+    
+    public Reader(URL url) throws ConfigurationException{
+        propertiesConfiguration = new PropertiesConfiguration(url);
     }
 
     public PropertiesConfiguration getPropertiesConfiguration() {
