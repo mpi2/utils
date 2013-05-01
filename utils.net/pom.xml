@@ -165,7 +165,7 @@
                     </descriptorRefs>
                     <formats>
                         <format>jar</format>
-                        <format>zip</format>
+                       
                     </formats>
                 </configuration>
                 <executions>
