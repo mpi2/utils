@@ -6,7 +6,7 @@
     <artifactId>utils</artifactId>
     <packaging>pom</packaging>
     <name>utils</name>
-    <version>1.0.0-SNAPSHOT</version>    
+    <version>1.0.0</version>    
     <description>
         
     </description>
@@ -111,6 +111,42 @@
                 </configuration>
             </plugin>
 
+
+            <plugin>  
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.7</version>
+                <executions>
+                    <execution>
+                        <inherited>false</inherited>
+                        <id>purge-repository</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>purge-local-repository</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <inherited>false</inherited>
+                        <id>remove-old-installers</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>remove-project-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <removeAll>true</removeAll>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 	  <plugin>
                 <!--
                 mvn license:check

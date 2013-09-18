@@ -98,7 +98,10 @@ public final class Argument<T> {
         for (int i = 0; i < args.length; i += 2) {
             if (args[i].startsWith(charNamePrefix) || args[i].startsWith(stringNamePrefix)) {
                 if (args[i].replaceAll("-*", "").equals(this.getCharacterName()) || args[i].replaceAll("-*", "").equals(this.getWordName())) {
+                    try{
                     this.rawValue = args[i + 1];
+                    }catch(ArrayIndexOutOfBoundsException ex){
+                    }
                     break;
                 }
             }

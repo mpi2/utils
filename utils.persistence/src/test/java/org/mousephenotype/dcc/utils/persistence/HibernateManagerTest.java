@@ -62,6 +62,8 @@ public class HibernateManagerTest {
     private static final String CONNECTION_PROPERTIES_FILENAME = "hibernate.test.common.properties";
     private static final String PERSISTENCE_UNITNAME = "org.mousephenotype.dcc.exportlibrary.datastructure";
     private static Reader reader;
+    private static SubmissionSet centreSpecimenSubmissionSet;
+    private static SubmissionSet centreProcedureSubmissionSet;
 
     public static SubmissionSet generateSubmissionSetExampleForCentreSpecimen() {
 
@@ -180,9 +182,14 @@ public class HibernateManagerTest {
 
         Assert.assertNotNull(HibernateManagerTest.hibernateManager);
 
-        hibernateManager.persist(generateSubmissionSetExampleForCentreSpecimen());
+        HibernateManagerTest.centreProcedureSubmissionSet = generateSubmissionSetExampleForCentreProcedure();
+        HibernateManagerTest.centreSpecimenSubmissionSet = generateSubmissionSetExampleForCentreSpecimen();
 
-        hibernateManager.persist(generateSubmissionSetExampleForCentreProcedure());
+        hibernateManager.persist(HibernateManagerTest.centreProcedureSubmissionSet);
+        logger.info("centreProcedureSubmissionSet {} persisted", HibernateManagerTest.centreProcedureSubmissionSet.getHjid());
+
+        hibernateManager.persist(HibernateManagerTest.centreSpecimenSubmissionSet);
+        logger.info("centreSpecimenSubmissionSet {} persisted", HibernateManagerTest.centreSpecimenSubmissionSet.getHjid());
 
     }
 
@@ -198,6 +205,7 @@ public class HibernateManagerTest {
 
     @Test
     public void testQuery() {
+        logger.info("running testQuery");
         String query = "from CentreSpecimen";
         List<CentreSpecimen> centreSpecimens = null;
         try {
@@ -211,7 +219,7 @@ public class HibernateManagerTest {
 
     @Test
     public void testQuery2() {
-
+        logger.info("running testQuery2");
         String query = "from Submission submission inner join fetch submission.centreProcedure ";
         List<Submission> submissions = null;
         try {
@@ -226,6 +234,7 @@ public class HibernateManagerTest {
 
     @Test
     public void testGetSubmission() {
+        logger.info("running testGetSubmission");
         List<Submission> submissions = null;
         CriteriaQuery<Submission> criteriaQuery = hibernateManager.getCriteriaQuery(Submission.class);
         Root<Submission> queryRoot = criteriaQuery.from(Submission.class);
@@ -255,6 +264,7 @@ public class HibernateManagerTest {
 
     @Test
     public void testGetContainer() {
+        logger.info("running testGetContainer");
         String query = "from CentreProcedure";
         List<CentreProcedure> centreProcedures = null;
         try {
@@ -272,5 +282,27 @@ public class HibernateManagerTest {
         submission1 = hibernateManager.getContainer(centreProcedures.get(0), Submission.class, "centreProcedure");
 
         Assert.assertNotNull(submission1);
+        if (submission1 == null) {
+            logger.error("cannot find submission1");
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testRemove() {
+        logger.info("running testRemove");
+        try {
+            logger.info("trying to remove object {}", HibernateManagerTest.centreSpecimenSubmissionSet.getHjid());
+            hibernateManager.remove(HibernateManagerTest.centreSpecimenSubmissionSet);
+        } catch (Exception ex) {
+            logger.error("error removing object", ex);
+            Assert.fail();
+        }
+        try {
+            hibernateManager.remove(SubmissionSet.class, HibernateManagerTest.centreProcedureSubmissionSet.getHjid());
+        } catch (Exception ex) {
+            logger.error("error removing object", ex);
+            Assert.fail();
+        }
     }
 }

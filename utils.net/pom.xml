@@ -6,7 +6,7 @@
     <artifactId>utils.net</artifactId>
     <packaging>jar</packaging>
     <name>utils.net</name>
-    <version>1.0.0-SNAPSHOT</version>    
+    <version>1.0.0</version>    
     <description>
         
     </description>
@@ -16,7 +16,7 @@
     <parent>
         <groupId>org.mousephenotype.dcc.utils</groupId>
         <artifactId>utils</artifactId>
-        <version>1.0.0-SNAPSHOT</version>    
+        <version>1.0.0</version>    
     </parent>
     
  
@@ -107,6 +107,9 @@
                         </fileset>
                         <fileset>
                             <directory>test_data</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>data</directory>
                         </fileset>
                     </filesets>
                 </configuration>
@@ -213,6 +216,18 @@
             </exclusions>
         </dependency>
         
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-ftp</artifactId>
+            <version>2.2.3.RELEASE</version>
+            <type>jar</type>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.5.0</version>
+        </dependency>
     </dependencies>
        
     <properties>

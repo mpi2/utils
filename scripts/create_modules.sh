@@ -40,16 +40,22 @@ generate_project ()
 
 #mkdir ../utils.persistence
 
-mkdir ../utils.io
+#mkdir ../utils.io
+
+mkdir ../utils.net
 
 #generate_project 'utils.xml'
 
 #generate_project 'utils.persistence'
 
-generate_project 'utils.io'
+#generate_project 'utils.io'
+
+generate_project 'utils.net'
 
 #mv utils.xml ../.
 
 #mv  utils.persistence ../.
 
-mv utils.io ../.
+# mv utils.io ../.
+
+mv utils.net ../.

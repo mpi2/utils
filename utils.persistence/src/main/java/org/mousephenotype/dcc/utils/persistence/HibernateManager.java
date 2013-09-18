@@ -21,7 +21,9 @@
  */
 package org.mousephenotype.dcc.utils.persistence;
 
+import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -33,6 +35,7 @@ import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.ejb.EntityManagerFactoryImpl;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,10 +55,10 @@ public class HibernateManager {
 
     private void setup(Map properties, String persistenceUnitname) throws HibernateException {
         logger.trace("persistence properties");
-        for(Object key :properties.keySet()){
+        for (Object key : properties.keySet()) {
             logger.trace("{} {}", key, properties.get(key));
         }
-        
+
         entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnitname == null ? PERSISTENCEUNITNAME : persistenceUnitname, properties);
         entityManagerFactoryImp = (EntityManagerFactoryImpl) entityManagerFactory;
     }
@@ -70,10 +73,14 @@ public class HibernateManager {
     }
 
     public EntityManager getEntityManager() {
-        if (this.entityManager == null) {
+        if (this.entityManager == null || !this.entityManager.isOpen()) {
             entityManager = entityManagerFactoryImp.createEntityManager();
         }
         return entityManager;
+    }
+
+    public EntityManagerFactoryImpl getEntityManagerFactoryImpl() {
+        return this.entityManagerFactoryImp;
     }
 
     public synchronized void close() throws HibernateException {
@@ -97,15 +104,15 @@ public class HibernateManager {
         }
     }
 
-    public synchronized <T> List<T> query(String query) throws HibernateException {
-        if (this.session == null) {
-            this.session = entityManagerFactoryImp.getSessionFactory().openSession();
-        }
+    public  <T> List<T> query(String query) throws HibernateException {
+        this.refreshSession();
         List<T> results = this.session.createQuery(query).list();
         return results;
     }
+    
+    
 
-    public synchronized <T, U> T getContainer(U continent, Class<T> containersClazz, String containerAttribute) {
+    public  <T, U> T getContainer(U continent, Class<T> containersClazz, String containerAttribute) {
 
         //String lexicalQuery="from Submission submission inner join fetch submission.centreProcedure centreProcedure  where centreProcedure = :selectedCentreProcedure";
         StringBuilder lexicalQuery = new StringBuilder(" from ");
@@ -121,9 +128,7 @@ public class HibernateManager {
         lexicalQuery.append(containerAttribute);
         lexicalQuery.append(" = :continent");
 
-        if (this.session == null) {
-            this.session = entityManagerFactoryImp.getSessionFactory().openSession();
-        }
+        this.refreshSession();
 
         org.hibernate.Query query = this.session.createQuery(lexicalQuery.toString());
         query.setParameter("continent", continent);
@@ -143,17 +148,13 @@ public class HibernateManager {
     }
 
     public synchronized <T> List<T> executeCriteriaQuery(CriteriaQuery<T> criteriaQuery) throws IllegalStateException, EntityExistsException, IllegalArgumentException, TransactionRequiredException, RuntimeException {
-        if (this.entityManager == null) {
-            entityManager = entityManagerFactoryImp.createEntityManager();
-        }
+        this.refreshEntityManager();
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
     public synchronized <T> void persist(T object) throws IllegalStateException, EntityExistsException, IllegalArgumentException, TransactionRequiredException, RuntimeException {
         EntityTransaction entityTransaction = null;
-        if (this.entityManager == null) {
-            entityManager = entityManagerFactoryImp.createEntityManager();
-        }
+        this.refreshEntityManager();
         try {
             entityTransaction = this.entityManager.getTransaction();
             entityTransaction.begin();
@@ -167,11 +168,28 @@ public class HibernateManager {
         }
     }
 
-    public synchronized <T> void persist(List<T> objects) throws IllegalStateException, EntityExistsException, IllegalArgumentException, TransactionRequiredException, RuntimeException {
+    public synchronized <T> T merge(T object) throws IllegalStateException, EntityExistsException, IllegalArgumentException, TransactionRequiredException, RuntimeException {
         EntityTransaction entityTransaction = null;
-        if (this.entityManager == null) {
-            entityManager = entityManagerFactoryImp.createEntityManager();
+        T toReturn = null;
+        this.refreshEntityManager();
+        try {
+            entityTransaction = this.entityManager.getTransaction();
+            entityTransaction.begin();
+            toReturn = this.entityManager.merge(object);
+            entityTransaction.commit();
+        } catch (RuntimeException ex) {
+            if (entityTransaction != null && entityTransaction.isActive()) {
+                entityTransaction.rollback();
+            }
+            throw ex; // or display error message
         }
+        return toReturn;
+    }
+
+    public synchronized <T> List<T> merge(List<T> objects) throws IllegalStateException, EntityExistsException, IllegalArgumentException, TransactionRequiredException, RuntimeException {
+        EntityTransaction entityTransaction = null;
+        List<T> merged = new ArrayList<T>();
+        this.refreshEntityManager();
         try {
             entityTransaction = this.entityManager.getTransaction();
             entityTransaction.begin();
@@ -186,12 +204,11 @@ public class HibernateManager {
             }
             throw ex; // or display error message
         }
+        return merged;
     }
 
     public synchronized <T> T load(Class<T> clazz, long hjid) throws IllegalArgumentException {
-        if (this.entityManager == null) {
-            entityManager = entityManagerFactoryImp.createEntityManager();
-        }
+        this.refreshEntityManager();
         logger.info("find {} with hjid", clazz.getName(), hjid);
 
         return this.entityManager.find(clazz, hjid);
@@ -199,18 +216,14 @@ public class HibernateManager {
 
     public synchronized <T> List<T> query(String query, Class<T> clazz) throws IllegalStateException, QueryTimeoutException, TransactionRequiredException, PessimisticLockException,
             LockTimeoutException, PersistenceException {
-        if (this.entityManager == null) {
-            entityManager = entityManagerFactoryImp.createEntityManager();
-        }
+        this.refreshEntityManager();
 
         return this.entityManager.createQuery(query, clazz).getResultList();
     }
 
     public synchronized <T> T uniqueResult(Class<T> clazz) throws IllegalStateException, QueryTimeoutException, TransactionRequiredException, PessimisticLockException,
-            LockTimeoutException, PersistenceException,NoResultException {
-        if (this.entityManager == null) {
-            entityManager = entityManagerFactoryImp.createEntityManager();
-        }
+            LockTimeoutException, PersistenceException, NoResultException {
+        this.refreshEntityManager();
 
         return this.entityManager.createQuery("from " + clazz.getName(), clazz).getSingleResult();
     }
@@ -218,9 +231,7 @@ public class HibernateManager {
 //ImmutableMap.<String, Object>builder().put("STRAINID", strainID).build()
     public <T> List<T> query(String query, Map<String, Object> parameters, Class<T> clazz) throws IllegalStateException, QueryTimeoutException, TransactionRequiredException, PessimisticLockException,
             LockTimeoutException, PersistenceException {
-        if (this.entityManager == null) {
-            entityManager = entityManagerFactoryImp.createEntityManager();
-        }
+        this.refreshEntityManager();
         TypedQuery<T> createQuery = this.entityManager.createQuery(query, clazz);
         for (Map.Entry<String, Object> entry : parameters.entrySet()) {
             createQuery.setParameter(entry.getKey(), entry.getValue());
@@ -239,11 +250,10 @@ public class HibernateManager {
      * alter
      */
     public synchronized void alter() throws TransactionRequiredException, PersistenceException {
-        if (this.entityManager == null) {
-            entityManager = entityManagerFactoryImp.createEntityManager();
-        }
+        this.refreshEntityManager();
         this.entityManager.getTransaction().begin();
         this.entityManager.flush();
+        //this.entityManager.clear();
         this.entityManager.getTransaction().commit();
     }
 
@@ -259,16 +269,12 @@ public class HibernateManager {
      * @since Java Persistence 2.0
      */
     public synchronized <T> void detach(T object) {
-        if (this.entityManager == null) {
-            entityManager = entityManagerFactoryImp.createEntityManager();
-        }
+        this.refreshEntityManager();
         this.entityManager.detach(object);
     }
 
     public int execution(String update) {
-        if (this.session == null) {
-            this.session = entityManagerFactoryImp.getSessionFactory().openSession();
-        }
+        this.refreshSession();
         Transaction transaction = null;
         int result = -1;
         try {
@@ -285,9 +291,7 @@ public class HibernateManager {
     }
 
     public int nativeExecution(String update) {
-        if (this.session == null) {
-            this.session = entityManagerFactoryImp.getSessionFactory().openSession();
-        }
+        this.refreshSession();
         Transaction transaction = null;
         int result = -1;
         try {
@@ -304,10 +308,169 @@ public class HibernateManager {
         return result;
     }
 
-    public List aggregateResults(String lexicalQuery) throws HibernateException {
-        if (this.session == null) {
-            this.session = entityManagerFactoryImp.getSessionFactory().openSession();
+    public int nativeExecution(String update, Map<String, Object> parameters) {
+        this.refreshSession();
+        Transaction transaction = null;
+        int result = -1;
+        try {
+            transaction = session.beginTransaction();
+            SQLQuery sqlQuery = session.createSQLQuery(update);
+            if (parameters != null) {
+                for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+                    sqlQuery.setParameter(entry.getKey(), entry.getValue());
+                }
+            }
+            result = sqlQuery.executeUpdate();
+            transaction.commit();
+        } catch (RuntimeException ex) {
+            if (transaction != null) {
+                logger.error("rolling back transaction {}", ex);
+                transaction.rollback();
+            }
         }
+        return result;
+    }
+
+    public List nativeQuery(String query) {
+        this.refreshSession();
+        Transaction transaction = null;
+        List result = null;
+        try {
+            transaction = session.beginTransaction();
+            SQLQuery sqlQuery = session.createSQLQuery(query);
+            result = sqlQuery.list();
+            transaction.commit();
+        } catch (RuntimeException ex) {
+            if (transaction != null) {
+                logger.error("rolling back transaction {}", ex);
+                transaction.rollback();
+            }
+        }
+        return result;
+    }
+
+    public <T> List<T> nativeQuery(String query, Class<T> clazz) {
+        this.refreshSession();
+        Transaction transaction = null;
+        List<T> result = null;
+        try {
+            transaction = session.beginTransaction();
+            SQLQuery sqlQuery = session.createSQLQuery(query).addEntity(clazz);
+            result = sqlQuery.list();
+            transaction.commit();
+        } catch (RuntimeException ex) {
+            if (transaction != null) {
+                logger.error("rolling back transaction {}", ex);
+                transaction.rollback();
+            }
+        }
+        return result;
+    }
+
+    public <T> List<T> nativeQuery(String query, Class<T> clazz, com.google.common.collect.Table<String, Class, Object> parameters) {
+        this.refreshSession();
+        Transaction transaction = null;
+        List<T> result = null;
+        try {
+            transaction = session.beginTransaction();
+            SQLQuery sqlQuery = session.createSQLQuery(query).addEntity(clazz);
+            if (parameters != null) {
+                for (com.google.common.collect.Table.Cell<String, Class, Object> entry : parameters.cellSet()) {
+                    if (entry.getColumnKey().equals(String.class)) {
+                        sqlQuery.setString(entry.getRowKey(), (String) entry.getValue());
+                        continue;
+                    }
+                    if (entry.getColumnKey().equals(Long.class)) {
+                        sqlQuery.setLong(entry.getRowKey(), (Long) entry.getValue());
+                        continue;
+                    }
+                    if (entry.getColumnKey().equals(BigInteger.class)) {
+                        sqlQuery.setBigInteger(entry.getRowKey(), (BigInteger) entry.getValue());
+                        continue;
+                    }
+                    logger.error("Type {} not registered", entry.getValue().getClass());
+                }
+            }
+
+            result = sqlQuery.list();
+            transaction.commit();
+        } catch (RuntimeException ex) {
+            if (transaction != null) {
+                logger.error("rolling back transaction {}", ex);
+                transaction.rollback();
+            }
+        }
+        return result;
+    }
+
+    public List nativeQuery(String query, Map<String, org.hibernate.type.Type> scalars) {
+
+        this.refreshSession();
+        Transaction transaction = null;
+        List result = null;
+        try {
+            transaction = session.beginTransaction();
+            SQLQuery sqlQuery = session.createSQLQuery(query);
+            for (Map.Entry<String, org.hibernate.type.Type> entry : scalars.entrySet()) {
+                sqlQuery.addScalar(entry.getKey(), entry.getValue());
+            }
+            result = sqlQuery.list();
+            transaction.commit();
+        } catch (RuntimeException ex) {
+            if (transaction != null) {
+                logger.error("rolling back transaction {}", ex);
+                transaction.rollback();
+            }
+        }
+        return result;
+    }
+
+    //("imitsID",Long.class,331L);name type value
+    public List nativeQuery(String query, Map<String, org.hibernate.type.Type> scalars, com.google.common.collect.Table<String, Class, Object> parameters) {
+
+        this.refreshSession();
+        Transaction transaction = null;
+        List result = null;
+        try {
+            transaction = session.beginTransaction();
+            SQLQuery sqlQuery = session.createSQLQuery(query);
+            if (scalars != null) {
+                for (Map.Entry<String, org.hibernate.type.Type> entry : scalars.entrySet()) {
+                    sqlQuery.addScalar(entry.getKey(), entry.getValue());
+                }
+            }
+            if (parameters != null) {
+                for (com.google.common.collect.Table.Cell<String, Class, Object> entry : parameters.cellSet()) {
+                    if (entry.getColumnKey().equals(String.class)) {
+                        sqlQuery.setString(entry.getRowKey(), (String) entry.getValue());
+                        continue;
+                    }
+                    if (entry.getColumnKey().equals(Long.class)) {
+                        sqlQuery.setLong(entry.getRowKey(), (Long) entry.getValue());
+                        continue;
+                    }
+                    if (entry.getColumnKey().equals(BigInteger.class)) {
+                        sqlQuery.setBigInteger(entry.getRowKey(), (BigInteger) entry.getValue());
+                        continue;
+                    }
+                    logger.error("Type {} not registered", entry.getValue().getClass());
+                }
+            }
+
+
+            result = sqlQuery.list();
+            transaction.commit();
+        } catch (RuntimeException ex) {
+            if (transaction != null) {
+                logger.error("rolling back transaction {}", ex);
+                transaction.rollback();
+            }
+        }
+        return result;
+    }
+
+    public List aggregateResults(String lexicalQuery) throws HibernateException {
+        this.refreshSession();
         org.hibernate.Query query = session.createQuery(lexicalQuery);
         return query.list();
     }
@@ -317,9 +480,7 @@ public class HibernateManager {
      *
      */
     public BigInteger count(String lexicalQuery, Map<String, Object> parameters) throws HibernateException {
-        if (this.session == null) {
-            this.session = entityManagerFactoryImp.getSessionFactory().openSession();
-        }
+        this.refreshSession();
         org.hibernate.Query query = session.createQuery(lexicalQuery);
         if (parameters != null) {
             for (Map.Entry<String, Object> entry : parameters.entrySet()) {
@@ -330,9 +491,7 @@ public class HibernateManager {
     }
 
     public <T> T uniqueResult(String lexicalQuery, Map<String, Object> parameters) throws HibernateException {
-        if (this.session == null) {
-            this.session = entityManagerFactoryImp.getSessionFactory().openSession();
-        }
+        this.refreshSession();
         org.hibernate.Query query = session.createQuery(lexicalQuery);
         if (parameters != null) {
             for (Map.Entry<String, Object> entry : parameters.entrySet()) {
@@ -343,9 +502,7 @@ public class HibernateManager {
     }
 
     public List aggregateResults(String lexicalQuery, Map<String, Object> parameters) throws HibernateException {
-        if (this.session == null) {
-            this.session = entityManagerFactoryImp.getSessionFactory().openSession();
-        }
+        this.refreshSession();
         org.hibernate.Query query = session.createQuery(lexicalQuery);
         if (parameters != null) {
             for (Map.Entry<String, Object> entry : parameters.entrySet()) {
@@ -353,5 +510,50 @@ public class HibernateManager {
             }
         }
         return query.list();
+    }
+
+    public void remove(Object object) {
+        this.refreshEntityManager();
+        //if (this.entityManager != null && this.entityManager.isOpen()) {
+        if (this.entityManager.contains(object)) {
+            this.entityManager.getTransaction().begin();
+            this.entityManager.remove(object);
+            this.entityManager.getTransaction().commit();
+            logger.info("object has been removed successfully");
+        } else {
+            logger.info("object not found");
+        }
+        //}
+    }
+
+    //http://stackoverflow.com/questions/5482141/what-is-the-difference-between-entitymanager-find-and-entitymanger-getreferenc
+    //if the object has already been loaded, find doen't need to connect to the database.
+    public <T> void remove(Class<T> clazz, Serializable id) {
+        this.refreshEntityManager();
+        Object toBeRemoved = null;
+        //if (this.entityManager != null && this.entityManager.isOpen()) {
+        toBeRemoved = this.entityManager.find(clazz, id);
+        if (toBeRemoved != null) {
+            this.entityManager.getTransaction().begin();
+            this.entityManager.remove(toBeRemoved);
+            this.entityManager.getTransaction().commit();
+            logger.info("entity id {} has been removed", id);
+        } else {
+
+            logger.error("object with id {} was not present", id);
+        }
+        //}
+    }
+
+    private void refreshSession() {
+        if (this.session == null || !this.session.isOpen()) {
+            this.session = entityManagerFactoryImp.getSessionFactory().openSession();
+        }
+    }
+
+    private void refreshEntityManager() {
+        if (this.entityManager == null || !this.entityManager.isOpen()) {
+            entityManager = entityManagerFactoryImp.createEntityManager();
+        }
     }
 }

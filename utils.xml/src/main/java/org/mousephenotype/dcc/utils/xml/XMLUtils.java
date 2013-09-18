@@ -48,7 +48,7 @@ public class XMLUtils {
     
 
     
-    public static final String CONTEXTPATH = "org.mousephenotype.dcc.exportlibrary.datastructure.core.common:org.mousephenotype.dcc.exportlibrary.datastructure.core.procedure:org.mousephenotype.dcc.exportlibrary.datastructure.core.specimen:org.mousephenotype.dcc.exportlibrary.datastructure.tracker.submission:org.mousephenotype.dcc.exportlibrary.datastructure.tracker.validation:org.mousephenotype.dcc.exportlibrary.datastructure.tracker.validation_report";
+    public static final String CONTEXTPATH = "org.mousephenotype.dcc.exportlibrary.datastructure.core.common:org.mousephenotype.dcc.exportlibrary.datastructure.core.procedure:org.mousephenotype.dcc.exportlibrary.datastructure.core.specimen:org.mousephenotype.dcc.exportlibrary.datastructure.tracker.submission:org.mousephenotype.dcc.exportlibrary.datastructure.tracker.validation";
 
     public static <T> T unmarshal(String contextPath, Class<T> clazz, String filename) throws JAXBException, FileNotFoundException, IOException {
         if (!XMLUtils.jAXBContexts.containsKey(contextPath)) {

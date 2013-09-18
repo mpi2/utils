@@ -39,6 +39,7 @@ public class FTPUtils {
     public static enum fileTypes {
 
         ASCII_FILE_TYPE, EBCDIC_FILE_TYPE, BINARY_FILE_TYPE, LOCAL_FILE_TYPE
+        
     };
 
     public static enum fileTransferModes {
@@ -53,14 +54,15 @@ public class FTPUtils {
     private final FTPClient ftpClient;
     private boolean login = false;
 
-    public FTPUtils(String hostname, int port, String username, String password, fileTransferModes fileTransferMode) throws IOException {
+    public FTPUtils(String hostname, int port, String username, String password, fileTypes fileType, fileTransferModes fileTransferMode) throws IOException {
         //
         this.ftpClient = new FTPClient();
         //
         this.ftpClient.connect(hostname, port);
         
         this.login = this.ftpClient.login(username, password);
-
+        
+        this.ftpClient.setFileType( fileType.ordinal());
         this.ftpClient.setFileTransferMode(fileTransferMode.value());
 
         if (!this.login) {

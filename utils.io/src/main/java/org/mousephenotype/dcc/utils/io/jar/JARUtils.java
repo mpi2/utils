@@ -21,11 +21,14 @@
  */
 package org.mousephenotype.dcc.utils.io.jar;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -35,11 +38,28 @@ import org.xml.sax.SAXException;
  * @author julian
  */
 public class JARUtils {
-protected static final Logger logger = LoggerFactory.getLogger(JARUtils.class);
+
+    protected static final Logger logger = LoggerFactory.getLogger(JARUtils.class);
+
+    
+      public static <T> String getCwd(Class<T> clazz) {
+        String path = clazz.getProtectionDomain().getCodeSource().getLocation().getPath();
+        return path.substring(0,path.lastIndexOf(File.separator));
+    }
+      
+      public static File[] getFiles(String directoryName, String wildcard) {
+        //http://commons.apache.org/io/apidocs/org/apache/commons/io/filefilter/WildcardFileFilter.html
+        File directory = new File(directoryName);
+        FileFilter fileFilter = new WildcardFileFilter(wildcard);
+        return directory.listFiles(fileFilter);
+
+    }
+      
+    
     public static <T> URL getURL(Class<T> clazz) {
         return clazz.getProtectionDomain().getCodeSource().getLocation();
     }
-
+    
     public static <T> boolean inJar(Class<T> clazz) {
         return getURL(clazz).getPath().endsWith("jar");
     }
@@ -47,12 +67,11 @@ protected static final Logger logger = LoggerFactory.getLogger(JARUtils.class);
     public static <T> boolean inWar(Class<T> clazz) {
         return getURL(clazz).getPath().endsWith("war");
     }
-    
-    public static<T> boolean inTarget(Class<T> clazz) {
+
+    public static <T> boolean inTarget(Class<T> clazz) {
         return getURL(clazz).getPath().endsWith("classes/");
     }
-    
-    
+
     public static <T> URL getResource(Class<T> clazz, String name) {
         return clazz.getClassLoader().getResource(name);
     }

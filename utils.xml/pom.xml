@@ -6,7 +6,7 @@
     <artifactId>utils.xml</artifactId>
     <packaging>jar</packaging>
     <name>utils.xml</name>
-    <version>1.0.0-SNAPSHOT</version>    
+    <version>1.0.0</version>    
     <description>
         
     </description>
@@ -16,7 +16,7 @@
     <parent>
         <groupId>org.mousephenotype.dcc.utils</groupId>
         <artifactId>utils</artifactId>
-        <version>1.0.0-SNAPSHOT</version>    
+        <version>1.0.0</version>    
     </parent>
 
     
@@ -154,7 +154,7 @@
                     </archive>
                     <formats>
                         <format>jar</format>
-                        <format>zip</format>
+
                     </formats>
                 </configuration>
                 <executions>
@@ -178,7 +178,7 @@
         <dependency>
             <groupId>org.mousephenotype.dcc.exportlibrary.datastructure</groupId>
             <artifactId>exportlibrary.datastructure</artifactId>
-            <version>3.6</version>
+            <version>3.7</version>
             <type>jar</type>
             <scope>test</scope>
         </dependency>

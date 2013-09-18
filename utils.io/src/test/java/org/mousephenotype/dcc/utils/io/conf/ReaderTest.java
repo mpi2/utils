@@ -28,7 +28,6 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mousephenotype.dcc.utils.io.conf.Reader;
 import org.slf4j.LoggerFactory;
 
 public class ReaderTest {
@@ -77,7 +76,7 @@ public class ReaderTest {
     @Test(expected = java.lang.AssertionError.class)
     public void testGetMultivaluePropertiesInt() {
         String key = "int_list";
-        List<Object> expected = new ArrayList<Object>();
+        List<Object> expected = new ArrayList<>();
         expected.add(Integer.valueOf(1));
         expected.add(Integer.valueOf(3));
         expected.add(Integer.valueOf(4));

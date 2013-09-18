@@ -61,6 +61,7 @@ http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistenc
         <class>org.mousephenotype.dcc.exportlibrary.datastructure.tracker.submission.SubmissionSet</class>
         <class>org.mousephenotype.dcc.exportlibrary.datastructure.tracker.validation.Validation</class>
         <class>org.mousephenotype.dcc.exportlibrary.datastructure.tracker.validation.ValidationSet</class>
+        <class>org.mousephenotype.dcc.exportlibrary.datastructure.tracker.validation_report.ResourceVersion</class>
         <class>org.mousephenotype.dcc.exportlibrary.datastructure.tracker.validation_report.ValidationReport</class>
         <class>org.mousephenotype.dcc.exportlibrary.datastructure.tracker.validation_report.ValidationReportSet</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
