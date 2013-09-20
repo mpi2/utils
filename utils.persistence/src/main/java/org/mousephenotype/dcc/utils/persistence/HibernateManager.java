@@ -104,7 +104,7 @@ public class HibernateManager {
         }
     }
 
-    public  <T> List<T> query(String query) throws HibernateException {
+    public <T> List<T> query(String query) throws HibernateException {
         this.refreshSession();
         List<T> results = this.session.createQuery(query).list();
         return results;
@@ -112,7 +112,7 @@ public class HibernateManager {
     
     
 
-    public  <T, U> T getContainer(U continent, Class<T> containersClazz, String containerAttribute) {
+    public <T, U> T getContainer(U continent, Class<T> containersClazz, String containerAttribute) {
 
         //String lexicalQuery="from Submission submission inner join fetch submission.centreProcedure centreProcedure  where centreProcedure = :selectedCentreProcedure";
         StringBuilder lexicalQuery = new StringBuilder(" from ");
@@ -139,7 +139,7 @@ public class HibernateManager {
     /*
      * http://docs.jboss.org/hibernate/orm/4.0/hem/en-US/html/querycriteria.html
      */
-    public synchronized CriteriaBuilder getCriteriaBuilder() {
+    public CriteriaBuilder getCriteriaBuilder() {
         return this.entityManagerFactoryImp.getCriteriaBuilder();
     }
 
@@ -147,12 +147,12 @@ public class HibernateManager {
         return this.getCriteriaBuilder().createQuery(clazz);
     }
 
-    public synchronized <T> List<T> executeCriteriaQuery(CriteriaQuery<T> criteriaQuery) throws IllegalStateException, EntityExistsException, IllegalArgumentException, TransactionRequiredException, RuntimeException {
+    public <T> List<T> executeCriteriaQuery(CriteriaQuery<T> criteriaQuery) throws IllegalStateException, EntityExistsException, IllegalArgumentException, TransactionRequiredException, RuntimeException {
         this.refreshEntityManager();
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
-    public synchronized <T> void persist(T object) throws IllegalStateException, EntityExistsException, IllegalArgumentException, TransactionRequiredException, RuntimeException {
+    public <T> void persist(T object) throws IllegalStateException, EntityExistsException, IllegalArgumentException, TransactionRequiredException, RuntimeException {
         EntityTransaction entityTransaction = null;
         this.refreshEntityManager();
         try {
@@ -168,7 +168,7 @@ public class HibernateManager {
         }
     }
 
-    public synchronized <T> T merge(T object) throws IllegalStateException, EntityExistsException, IllegalArgumentException, TransactionRequiredException, RuntimeException {
+    public <T> T merge(T object) throws IllegalStateException, EntityExistsException, IllegalArgumentException, TransactionRequiredException, RuntimeException {
         EntityTransaction entityTransaction = null;
         T toReturn = null;
         this.refreshEntityManager();
@@ -186,7 +186,7 @@ public class HibernateManager {
         return toReturn;
     }
 
-    public synchronized <T> List<T> merge(List<T> objects) throws IllegalStateException, EntityExistsException, IllegalArgumentException, TransactionRequiredException, RuntimeException {
+    public <T> List<T> merge(List<T> objects) throws IllegalStateException, EntityExistsException, IllegalArgumentException, TransactionRequiredException, RuntimeException {
         EntityTransaction entityTransaction = null;
         List<T> merged = new ArrayList<T>();
         this.refreshEntityManager();
@@ -207,21 +207,21 @@ public class HibernateManager {
         return merged;
     }
 
-    public synchronized <T> T load(Class<T> clazz, long hjid) throws IllegalArgumentException {
+    public <T> T load(Class<T> clazz, long hjid) throws IllegalArgumentException {
         this.refreshEntityManager();
         logger.info("find {} with hjid", clazz.getName(), hjid);
 
         return this.entityManager.find(clazz, hjid);
     }
 
-    public synchronized <T> List<T> query(String query, Class<T> clazz) throws IllegalStateException, QueryTimeoutException, TransactionRequiredException, PessimisticLockException,
+    public <T> List<T> query(String query, Class<T> clazz) throws IllegalStateException, QueryTimeoutException, TransactionRequiredException, PessimisticLockException,
             LockTimeoutException, PersistenceException {
         this.refreshEntityManager();
 
         return this.entityManager.createQuery(query, clazz).getResultList();
     }
 
-    public synchronized <T> T uniqueResult(Class<T> clazz) throws IllegalStateException, QueryTimeoutException, TransactionRequiredException, PessimisticLockException,
+    public <T> T uniqueResult(Class<T> clazz) throws IllegalStateException, QueryTimeoutException, TransactionRequiredException, PessimisticLockException,
             LockTimeoutException, PersistenceException, NoResultException {
         this.refreshEntityManager();
 
@@ -249,7 +249,7 @@ public class HibernateManager {
      * First modify the field values of any of your mapped objects Then invoke
      * alter
      */
-    public synchronized void alter() throws TransactionRequiredException, PersistenceException {
+    public void alter() throws TransactionRequiredException, PersistenceException {
         this.refreshEntityManager();
         this.entityManager.getTransaction().begin();
         this.entityManager.flush();
@@ -260,7 +260,7 @@ public class HibernateManager {
     /**
      * Remove the given entity from the persistence context, causing a managed
      * entity to become detached. Unflushed changes made to the entity if any
-     * (including removal of the entity), will not be synchronized to the
+     * (including removal of the entity), will not be to the
      * database. Entities which previously referenced the detached entity will
      * continue to reference it.
      *
@@ -268,7 +268,7 @@ public class HibernateManager {
      * @throws IllegalArgumentException if the instance is not an entity
      * @since Java Persistence 2.0
      */
-    public synchronized <T> void detach(T object) {
+    public <T> void detach(T object) {
         this.refreshEntityManager();
         this.entityManager.detach(object);
     }
