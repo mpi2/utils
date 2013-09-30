@@ -53,18 +53,24 @@ public class HibernateManager {
     private Session session;
     private final String _persistenceUnitName;
 
+    public Properties getProperties() {
+        return properties;
+    }
+    private final Properties properties;
+
     private void setup(Map properties, String persistenceUnitname) throws HibernateException {
         logger.trace("persistence properties");
         for (Object key : properties.keySet()) {
             logger.trace("{} {}", key, properties.get(key));
         }
-
+        
         entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnitname == null ? PERSISTENCEUNITNAME : persistenceUnitname, properties);
         entityManagerFactoryImp = (EntityManagerFactoryImpl) entityManagerFactory;
     }
 
     public HibernateManager(Properties properties, String persistenceUnitname) throws HibernateException {
         this._persistenceUnitName = persistenceUnitname;
+        this.properties = properties;
         this.setup(properties, persistenceUnitname);
     }
 
