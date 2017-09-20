@@ -63,7 +63,7 @@ public class HibernateManager {
         for (Object key : properties.keySet()) {
             logger.trace("{} {}", key, properties.get(key));
         }
-        
+
         entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnitname == null ? PERSISTENCEUNITNAME : persistenceUnitname, properties);
         entityManagerFactoryImp = (EntityManagerFactoryImpl) entityManagerFactory;
     }
@@ -266,9 +266,9 @@ public class HibernateManager {
     /**
      * Remove the given entity from the persistence context, causing a managed
      * entity to become detached. Unflushed changes made to the entity if any
-     * (including removal of the entity), will not be to the
-     * database. Entities which previously referenced the detached entity will
-     * continue to reference it.
+     * (including removal of the entity), will not be to the database. Entities
+     * which previously referenced the detached entity will continue to
+     * reference it.
      *
      * @param entity entity instance
      * @throws IllegalArgumentException if the instance is not an entity

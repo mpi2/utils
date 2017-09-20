@@ -190,6 +190,7 @@
                         <exclude>**/*.wsdl</exclude>
                         <exclude>**/*.tmp</exclude>
                         <exclude>**/*.json</exclude>
+                        <exclude>**/*.xml</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -209,13 +210,9 @@
     </build>
     
       
-       <repositories>
-
-	<repository>
-     	    <id>cloudbees</id>
-            <url>http://repository-julianah.forge.cloudbees.com/release/</url>
-        </repository>
-
+        
+   
+    <repositories>
 
         <repository>
             <id>maven2</id>
@@ -223,51 +220,33 @@
         </repository>
         
         <repository>
-            <id>Codehaus repository</id>
-            <url>http://repository.codehaus.org/</url>
-        </repository>
-        
-        <repository>
             <id>jboss-public-repository-group</id>
             <name>JBoss Public Maven Repository Group</name>
             <url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
-        </repository>
-
-        <repository>
-            <id>sonatype-public-repository</id>
-            <url>https://oss.sonatype.org/content/groups/public</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
         </repository>
 
     </repositories>
     
     <pluginRepositories>
         <pluginRepository>
-            <id>maven2</id>
-            <url>http://repo1.maven.org/maven2</url>
-        </pluginRepository>
-        
-        <pluginRepository>
             <id>Codehaus repository</id>
             <url>http://repository.codehaus.org/</url>
         </pluginRepository>
         
         <pluginRepository>
+            <id>maven2</id>
+            <url>http://repo1.maven.org/maven2</url>
+        </pluginRepository>
+        <pluginRepository>
             <id>jboss-public-repository-group</id>
             <name>JBoss Public Maven Repository Group</name>
             <url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
         </pluginRepository>
-        
         <pluginRepository>
             <id>sonatype-public-repository</id>
             <url>https://oss.sonatype.org/content/groups/public</url>
             <snapshots>
-                <enabled>false</enabled>
+                <enabled>true</enabled>
             </snapshots>
             <releases>
                 <enabled>true</enabled>
@@ -328,8 +307,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-	<org.slf4j.version>1.7.3</org.slf4j.version>
-	<ch.qos.logback.version>1.0.9</ch.qos.logback.version>
+        <org.slf4j.version>1.7.3</org.slf4j.version>
+        <ch.qos.logback.version>1.0.9</ch.qos.logback.version>
     </properties>
     
 </project>

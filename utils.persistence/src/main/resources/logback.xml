@@ -22,7 +22,7 @@
 
 -->
 <!-- 1 trace 2 debug 3 info 4 warn 5 error 6 fatal -->
-<configuration debug="false"> 
+<configuration> 
     <property name="EXECUTION_LOGS_HOME" value="exec_logs" />  
     <timestamp key="bySecond" datePattern="yyyyMMdd'T'HHmmss"/>
        
@@ -53,14 +53,14 @@
  <property name="com.mchange.v2.log.FallbackMLog.DEFAULT_CUTOFF_LEVEL" value="INFO"/>
  
  <logger name="com.mchange.v2.c3p0"> 
-        <level value="INFO"/>
+        <level value="OFF"/>
         <appender-ref ref="FILE_LOG"/>
         <appender-ref ref="CONSOLE"/>
     </logger>
  
  <!--http://docs.jboss.org/hibernate/orm/4.1/manual/en-US/html/ch03.html#configuration-logging -->   
  <logger name="org.hibernate.transaction">
-        <level value="INFO"/>
+        <level value="ERROR"/>
         <appender-ref ref="FILE_LOG"/>
         <appender-ref ref="CONSOLE"/>
  </logger>

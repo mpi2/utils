@@ -27,7 +27,6 @@ generate_project ()
 	mvn archetype:generate -B -DarchetypeGroupId=org.mousephenotype.dcc.base-archetype \
                             -DarchetypeArtifactId=base-archetype \
                             -DarchetypeVersion=1.0.0-SNAPSHOT \
-                            -DarchetypeRepository=http://193.63.70.36:8080/nexus-2.0.5/content/groups/public/ \
                             -DgroupId=org.mousephenotype.dcc.$1\
                             -DartifactId=$1 \
                             -Dversion=1.0.0-SNAPSHOT
